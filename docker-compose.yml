@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # Oracle Database (or PostgreSQL alternative)
+  database:
+    image: container-registry.oracle.com/database/express:latest
+    # OR for PostgreSQL:
+    # image: postgres:15
+    ports:
+      - "1521:1521"
+      # OR for PostgreSQL: - "5432:5432"
+    environment:
+      - ORACLE_PWD=YourPassword123
+      # OR for PostgreSQL:
+      # - POSTGRES_PASSWORD=YourPassword123
+      # - POSTGRES_DB=reconciliation
+    volumes:
+      - db-data:/opt/oracle/oradata
+      # OR for PostgreSQL: - db-data:/var/lib/postgresql/data
+
+  # Java Backend
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:oracle:thin:@database:1521/XE
+      # OR for PostgreSQL:
+      # - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/reconciliation
+      - SPRING_DATASOURCE_USERNAME=system
+      - SPRING_DATASOURCE_PASSWORD=YourPassword123
+    depends_on:
+      - database
+
+  # Frontend (Nginx)
+  frontend:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+    depends_on:
+      - backend
+
+volumes:
+  db-data:
