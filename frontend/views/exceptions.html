@@ -1,0 +1,123 @@
+<div class="exceptions-management">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2><i class="bi bi-exclamation-triangle"></i> Exception Management</h2>
+            <hr>
+        </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-outline-primary"
+                        ng-class="{'active': selectedFilter === 'ALL'}"
+                        ng-click="selectedFilter = 'ALL'; filterExceptions()">
+                    All
+                </button>
+                <button type="button" class="btn btn-outline-danger"
+                        ng-class="{'active': selectedFilter === 'OPEN'}"
+                        ng-click="selectedFilter = 'OPEN'; filterExceptions()">
+                    Open
+                </button>
+                <button type="button" class="btn btn-outline-warning"
+                        ng-class="{'active': selectedFilter === 'IN_PROGRESS'}"
+                        ng-click="selectedFilter = 'IN_PROGRESS'; filterExceptions()">
+                    In Progress
+                </button>
+                <button type="button" class="btn btn-outline-success"
+                        ng-class="{'active': selectedFilter === 'RESOLVED'}"
+                        ng-click="selectedFilter = 'RESOLVED'; filterExceptions()">
+                    Resolved
+                </button>
+            </div>
+        </div>
+        <div class="col-md-6 text-end">
+            <button class="btn btn-primary" ng-click="loadExceptions()">
+                <i class="bi bi-arrow-clockwise"></i> Refresh
+            </button>
+        </div>
+    </div>
+
+    <!-- Exceptions Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Severity</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="exception in filteredExceptions">
+                                <td>{{exception.exceptionId}}</td>
+                                <td>{{exception.exceptionType}}</td>
+                                <td>{{exception.exceptionDescription}}</td>
+                                <td>{{exception.exceptionAmount | currency}}</td>
+                                <td><span ng-class="getSeverityClass(exception.severity)">{{exception.severity}}</span></td>
+                                <td><span ng-class="getStatusClass(exception.status)">{{exception.status}}</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary" ng-click="selectException(exception)" data-bs-toggle="modal" data-bs-target="#resolutionModal">
+                                        <i class="bi bi-pencil"></i> Resolve
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr ng-if="filteredExceptions.length === 0">
+                                <td colspan="7" class="text-center">No exceptions found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resolution Modal -->
+    <div class="modal fade" id="resolutionModal" tabindex="-1" ng-if="selectedException">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Resolve Exception</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Exception ID:</strong> {{selectedException.exceptionId}}</p>
+                    <p><strong>Type:</strong> {{selectedException.exceptionType}}</p>
+                    <p><strong>Description:</strong> {{selectedException.exceptionDescription}}</p>
+                    <hr>
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label">Status</label>
+                            <select class="form-control" ng-model="resolutionData.status">
+                                <option value="IN_PROGRESS">In Progress</option>
+                                <option value="RESOLVED">Resolved</option>
+                                <option value="CLOSED">Closed</option>
+                                <option value="WAIVED">Waived</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Resolution Comments</label>
+                            <textarea class="form-control" ng-model="resolutionData.resolutionComments" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Updated By</label>
+                            <input type="text" class="form-control" ng-model="resolutionData.updatedBy">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" ng-click="cancelResolution()">Cancel</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" ng-click="updateException()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

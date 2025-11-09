@@ -1,0 +1,65 @@
+<div class="reconciliation-runs">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2><i class="bi bi-list-task"></i> Reconciliation Runs</h2>
+            <hr>
+        </div>
+    </div>
+
+    <!-- Search and Filter -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <input type="text" class="form-control" ng-model="searchText" ng-change="filterRuns()" placeholder="Search runs...">
+        </div>
+        <div class="col-md-6 text-end">
+            <button class="btn btn-primary" ng-click="loadRuns()">
+                <i class="bi bi-arrow-clockwise"></i> Refresh
+            </button>
+        </div>
+    </div>
+
+    <!-- Runs Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Run ID</th>
+                                <th>Run Name</th>
+                                <th>Run Date</th>
+                                <th>Status</th>
+                                <th>Ledger Records</th>
+                                <th>Subledger Records</th>
+                                <th>Matched</th>
+                                <th>Exceptions</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="run in filteredRuns">
+                                <td>{{run.runId}}</td>
+                                <td>{{run.runName}}</td>
+                                <td>{{run.runDate | date:'short'}}</td>
+                                <td><span ng-class="getStatusClass(run.status)">{{run.status}}</span></td>
+                                <td>{{run.totalLedgerRecords}}</td>
+                                <td>{{run.totalSubledgerRecords}}</td>
+                                <td>{{run.matchedRecords}}</td>
+                                <td>{{run.exceptionRecords}}</td>
+                                <td>
+                                    <a href="#!/runs/{{run.runId}}" class="btn btn-sm btn-primary">
+                                        <i class="bi bi-eye"></i> View
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr ng-if="filteredRuns.length === 0">
+                                <td colspan="9" class="text-center">No reconciliation runs found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

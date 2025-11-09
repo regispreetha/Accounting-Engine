@@ -1,0 +1,127 @@
+<div class="dashboard">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2>
+                <i class="bi bi-speedometer2"></i> Dashboard
+                <button class="btn btn-sm btn-outline-primary float-end" ng-click="refresh()">
+                    <i class="bi bi-arrow-clockwise"></i> Refresh
+                </button>
+            </h2>
+            <hr>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Runs</h5>
+                    <h2>{{statistics.totalRuns}}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Open Exceptions</h5>
+                    <h2>{{statistics.openExceptions}}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Completed Runs</h5>
+                    <h2>{{recentRuns.length}}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Active Rules</h5>
+                    <h2>-</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Reconciliation Runs -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="bi bi-list-task"></i> Recent Reconciliation Runs</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Run Name</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Matched</th>
+                                <th>Exceptions</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="run in recentRuns">
+                                <td>{{run.runName}}</td>
+                                <td>{{run.runDate | date:'short'}}</td>
+                                <td><span class="badge" ng-class="getStatusClass(run.status)">{{run.status}}</span></td>
+                                <td>{{run.matchedRecords}}</td>
+                                <td>{{run.exceptionRecords}}</td>
+                                <td>
+                                    <a href="#!/runs/{{run.runId}}" class="btn btn-sm btn-primary">
+                                        <i class="bi bi-eye"></i> View
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr ng-if="recentRuns.length === 0">
+                                <td colspan="6" class="text-center">No reconciliation runs found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Open Exceptions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="bi bi-exclamation-triangle"></i> Open Exceptions</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Severity</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="exception in openExceptions">
+                                <td>{{exception.exceptionType}}</td>
+                                <td>{{exception.exceptionDescription}}</td>
+                                <td>{{exception.exceptionAmount | currency}}</td>
+                                <td><span ng-class="getSeverityClass(exception.severity)">{{exception.severity}}</span></td>
+                                <td><span ng-class="getStatusClass(exception.status)">{{exception.status}}</span></td>
+                            </tr>
+                            <tr ng-if="openExceptions.length === 0">
+                                <td colspan="5" class="text-center">No open exceptions</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

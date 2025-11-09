@@ -1,0 +1,192 @@
+<div class="rules-builder">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2><i class="bi bi-gear"></i> Rules Builder</h2>
+            <hr>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Rule Groups Panel -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Rule Groups</h5>
+                    <button class="btn btn-sm btn-primary float-end" ng-click="showRuleGroupForm = !showRuleGroupForm">
+                        <i class="bi bi-plus"></i> New Group
+                    </button>
+                </div>
+                <div class="card-body">
+                    <!-- New Rule Group Form -->
+                    <div ng-show="showRuleGroupForm" class="mb-3">
+                        <h6>Create Rule Group</h6>
+                        <form ng-submit="createRuleGroup()">
+                            <div class="mb-2">
+                                <input type="text" class="form-control" ng-model="newRuleGroup.ruleGroupName" placeholder="Group Name" required>
+                            </div>
+                            <div class="mb-2">
+                                <input type="number" class="form-control" ng-model="newRuleGroup.ledgerId" placeholder="Ledger ID" required>
+                            </div>
+                            <div class="mb-2">
+                                <input type="number" class="form-control" ng-model="newRuleGroup.subledgerId" placeholder="Subledger ID" required>
+                            </div>
+                            <div class="mb-2">
+                                <textarea class="form-control" ng-model="newRuleGroup.description" placeholder="Description"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-sm btn-success">Create</button>
+                            <button type="button" class="btn btn-sm btn-secondary" ng-click="showRuleGroupForm = false">Cancel</button>
+                        </form>
+                        <hr>
+                    </div>
+
+                    <!-- Rule Groups List -->
+                    <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-action"
+                           ng-repeat="group in ruleGroups"
+                           ng-click="selectRuleGroup(group)"
+                           ng-class="{'active': selectedRuleGroup && selectedRuleGroup.ruleGroupId === group.ruleGroupId}">
+                            <strong>{{group.ruleGroupName}}</strong><br>
+                            <small>{{group.description}}</small>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rules Panel -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Rules</h5>
+                    <button class="btn btn-sm btn-primary float-end"
+                            ng-click="showRuleForm = !showRuleForm"
+                            ng-disabled="!selectedRuleGroup">
+                        <i class="bi bi-plus"></i> New Rule
+                    </button>
+                </div>
+                <div class="card-body">
+                    <!-- New Rule Form -->
+                    <div ng-show="showRuleForm" class="mb-3">
+                        <h6>Create Rule</h6>
+                        <form ng-submit="createRule()">
+                            <div class="mb-2">
+                                <input type="text" class="form-control" ng-model="newRule.ruleName" placeholder="Rule Name" required>
+                            </div>
+                            <div class="mb-2">
+                                <input type="text" class="form-control" ng-model="newRule.ruleCode" placeholder="Rule Code" required>
+                            </div>
+                            <div class="mb-2">
+                                <select class="form-control" ng-model="newRule.ruleType" required>
+                                    <option value="">Select Rule Type</option>
+                                    <option value="ONE_TO_ONE">One-to-One</option>
+                                    <option value="ONE_TO_MANY">One-to-Many</option>
+                                    <option value="MANY_TO_ONE">Many-to-One</option>
+                                    <option value="MANY_TO_MANY">Many-to-Many</option>
+                                </select>
+                            </div>
+                            <div class="mb-2">
+                                <select class="form-control" ng-model="newRule.matchingType" required>
+                                    <option value="">Select Matching Type</option>
+                                    <option value="EXACT">Exact Match</option>
+                                    <option value="TOLERANCE">Tolerance Match</option>
+                                    <option value="CUSTOM">Custom Match</option>
+                                </select>
+                            </div>
+                            <div class="mb-2">
+                                <input type="number" class="form-control" ng-model="newRule.toleranceAmount" placeholder="Tolerance Amount" step="0.01">
+                            </div>
+                            <button type="submit" class="btn btn-sm btn-success">Create</button>
+                            <button type="button" class="btn btn-sm btn-secondary" ng-click="showRuleForm = false">Cancel</button>
+                        </form>
+                        <hr>
+                    </div>
+
+                    <!-- Rules List -->
+                    <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-action"
+                           ng-repeat="rule in rules"
+                           ng-click="selectRule(rule)"
+                           ng-class="{'active': selectedRule && selectedRule.ruleId === rule.ruleId}">
+                            <div class="d-flex justify-content-between">
+                                <strong>{{rule.ruleName}}</strong>
+                                <button class="btn btn-sm btn-danger" ng-click="deleteRule(rule.ruleId); $event.stopPropagation();">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                            <small>Type: {{rule.ruleType}} | Match: {{rule.matchingType}}</small>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Matching Criteria Panel -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Matching Criteria</h5>
+                    <button class="btn btn-sm btn-primary float-end"
+                            ng-click="showCriteriaForm = !showCriteriaForm"
+                            ng-disabled="!selectedRule">
+                        <i class="bi bi-plus"></i> New Criteria
+                    </button>
+                </div>
+                <div class="card-body">
+                    <!-- New Criteria Form -->
+                    <div ng-show="showCriteriaForm" class="mb-3">
+                        <h6>Create Matching Criteria</h6>
+                        <form ng-submit="createCriteria()">
+                            <div class="mb-2">
+                                <input type="text" class="form-control" ng-model="newCriteria.fieldName" placeholder="Field Name" required>
+                            </div>
+                            <div class="mb-2">
+                                <select class="form-control" ng-model="newCriteria.operator" required>
+                                    <option value="">Select Operator</option>
+                                    <option value="EQUALS">Equals</option>
+                                    <option value="NOT_EQUALS">Not Equals</option>
+                                    <option value="GREATER_THAN">Greater Than</option>
+                                    <option value="LESS_THAN">Less Than</option>
+                                    <option value="CONTAINS">Contains</option>
+                                </select>
+                            </div>
+                            <div class="mb-2">
+                                <select class="form-control" ng-model="newCriteria.valueSource" required>
+                                    <option value="">Select Source</option>
+                                    <option value="LEDGER">Ledger</option>
+                                    <option value="SUBLEDGER">Subledger</option>
+                                </select>
+                            </div>
+                            <div class="mb-2">
+                                <input type="text" class="form-control" ng-model="newCriteria.comparisonField" placeholder="Comparison Field">
+                            </div>
+                            <div class="mb-2">
+                                <select class="form-control" ng-model="newCriteria.logicalOperator">
+                                    <option value="AND">AND</option>
+                                    <option value="OR">OR</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-sm btn-success">Create</button>
+                            <button type="button" class="btn btn-sm btn-secondary" ng-click="showCriteriaForm = false">Cancel</button>
+                        </form>
+                        <hr>
+                    </div>
+
+                    <!-- Criteria List -->
+                    <div class="list-group">
+                        <div class="list-group-item" ng-repeat="criteria in matchingCriteria">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <strong>{{criteria.fieldName}}</strong> {{criteria.operator}}<br>
+                                    <small>Source: {{criteria.valueSource}} | Logical: {{criteria.logicalOperator}}</small>
+                                </div>
+                                <button class="btn btn-sm btn-danger" ng-click="deleteCriteria(criteria.criteriaId)">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

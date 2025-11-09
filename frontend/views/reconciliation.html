@@ -1,0 +1,98 @@
+<div class="reconciliation-execution">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2><i class="bi bi-play-circle"></i> Execute Reconciliation</h2>
+            <hr>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Reconciliation Parameters</h5>
+                </div>
+                <div class="card-body">
+                    <form ng-submit="executeReconciliation()">
+                        <div class="mb-3">
+                            <label class="form-label">Run Name *</label>
+                            <input type="text" class="form-control" ng-model="reconciliationData.runName" required placeholder="Enter run name">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Rule Group *</label>
+                            <select class="form-control" ng-model="reconciliationData.ruleGroupId" required>
+                                <option value="">Select Rule Group</option>
+                                <option ng-repeat="group in ruleGroups" value="{{group.ruleGroupId}}">
+                                    {{group.ruleGroupName}}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Period Start Date *</label>
+                                    <input type="date" class="form-control" ng-model="reconciliationData.periodStartDate" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Period End Date *</label>
+                                    <input type="date" class="form-control" ng-model="reconciliationData.periodEndDate" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Created By</label>
+                            <input type="text" class="form-control" ng-model="reconciliationData.createdBy" placeholder="Enter your name">
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg" ng-disabled="isExecuting">
+                                <span ng-if="!isExecuting">
+                                    <i class="bi bi-play-fill"></i> Execute Reconciliation
+                                </span>
+                                <span ng-if="isExecuting">
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    Executing...
+                                </span>
+                            </button>
+                            <button type="button" class="btn btn-secondary" ng-click="resetForm()">
+                                <i class="bi bi-arrow-counterclockwise"></i> Reset
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Execution Results -->
+            <div class="card mt-4" ng-if="executionResult">
+                <div class="card-header bg-success text-white">
+                    <h5><i class="bi bi-check-circle"></i> Execution Successful</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Run ID:</strong> {{executionResult.runId}}</p>
+                            <p><strong>Run Name:</strong> {{executionResult.runName}}</p>
+                            <p><strong>Status:</strong> <span class="badge bg-success">{{executionResult.status}}</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Total Ledger Records:</strong> {{executionResult.totalLedgerRecords}}</p>
+                            <p><strong>Total Subledger Records:</strong> {{executionResult.totalSubledgerRecords}}</p>
+                            <p><strong>Matched Records:</strong> {{executionResult.matchedRecords}}</p>
+                            <p><strong>Exception Records:</strong> {{executionResult.exceptionRecords}}</p>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <a href="#!/runs/{{executionResult.runId}}" class="btn btn-primary">
+                            <i class="bi bi-eye"></i> View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

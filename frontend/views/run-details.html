@@ -1,0 +1,145 @@
+<div class="run-details" ng-if="run">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2>
+                <i class="bi bi-info-circle"></i> Run Details: {{run.runName}}
+                <a href="#!/runs" class="btn btn-secondary float-end">
+                    <i class="bi bi-arrow-left"></i> Back to Runs
+                </a>
+            </h2>
+            <hr>
+        </div>
+    </div>
+
+    <!-- Summary Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Summary</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <p><strong>Run ID:</strong> {{run.runId}}</p>
+                            <p><strong>Status:</strong> <span ng-class="getStatusClass(run.status)">{{run.status}}</span></p>
+                            <p><strong>Created By:</strong> {{run.createdBy}}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <p><strong>Run Date:</strong> {{run.runDate | date:'short'}}</p>
+                            <p><strong>Period:</strong> {{run.periodStartDate | date:'shortDate'}} to {{run.periodEndDate | date:'shortDate'}}</p>
+                            <p><strong>Duration:</strong> {{run.executionDurationSeconds}} seconds</p>
+                        </div>
+                        <div class="col-md-3">
+                            <p><strong>Ledger Records:</strong> {{run.totalLedgerRecords}}</p>
+                            <p><strong>Subledger Records:</strong> {{run.totalSubledgerRecords}}</p>
+                            <p><strong>Matched Records:</strong> {{run.matchedRecords}}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <p><strong>Unmatched Ledger:</strong> {{run.unmatchedLedgerRecords}}</p>
+                            <p><strong>Unmatched Subledger:</strong> {{run.unmatchedSubledgerRecords}}</p>
+                            <p><strong>Exceptions:</strong> {{run.exceptionRecords}}</p>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-4">
+                            <p><strong>Total Matched Amount:</strong> {{run.totalMatchedAmount | currency}}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p><strong>Total Unmatched Amount:</strong> {{run.totalUnmatchedAmount | currency}}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p><strong>Variance Amount:</strong> {{run.varianceAmount | currency}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs for Matches and Exceptions -->
+    <div class="row">
+        <div class="col-12">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link" ng-class="{'active': activeTab === 'summary'}" href="#" ng-click="setActiveTab('summary')">
+                        Summary
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" ng-class="{'active': activeTab === 'matches'}" href="#" ng-click="setActiveTab('matches')">
+                        Matches ({{matches.length}})
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" ng-class="{'active': activeTab === 'exceptions'}" href="#" ng-click="setActiveTab('exceptions')">
+                        Exceptions ({{exceptions.length}})
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content mt-3">
+                <!-- Matches Tab -->
+                <div ng-show="activeTab === 'matches'">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Match ID</th>
+                                <th>Match Type</th>
+                                <th>Status</th>
+                                <th>Ledger Amount</th>
+                                <th>Subledger Amount</th>
+                                <th>Variance</th>
+                                <th>Confidence</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="match in matches">
+                                <td>{{match.matchId}}</td>
+                                <td>{{match.matchType}}</td>
+                                <td><span class="badge bg-success">{{match.matchStatus}}</span></td>
+                                <td>{{match.ledgerAmount | currency}}</td>
+                                <td>{{match.subledgerAmount | currency}}</td>
+                                <td>{{match.varianceAmount | currency}}</td>
+                                <td>{{match.matchConfidence}}%</td>
+                            </tr>
+                            <tr ng-if="matches.length === 0">
+                                <td colspan="7" class="text-center">No matches found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Exceptions Tab -->
+                <div ng-show="activeTab === 'exceptions'">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Exception ID</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Severity</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="exception in exceptions">
+                                <td>{{exception.exceptionId}}</td>
+                                <td>{{exception.exceptionType}}</td>
+                                <td>{{exception.exceptionDescription}}</td>
+                                <td>{{exception.exceptionAmount | currency}}</td>
+                                <td><span ng-class="getSeverityClass(exception.severity)">{{exception.severity}}</span></td>
+                                <td><span ng-class="getStatusClass(exception.status)">{{exception.status}}</span></td>
+                            </tr>
+                            <tr ng-if="exceptions.length === 0">
+                                <td colspan="6" class="text-center">No exceptions found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
